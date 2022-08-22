@@ -112,5 +112,57 @@ namespace BL
             }
             return result;
         }
+
+        public static ML.Result GetAll()
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+
+                using (SqlConnection context = new SqlConnection(DL.Conexion.Get()))
+                {
+                    SqlCommand cmd = new SqlCommand();
+
+                    cmd.CommandText = "AlumnoGetAll";
+                    cmd.Connection = context;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    DataTable tableAlumno = new DataTable();
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+                    da.Fill(tableAlumno);
+
+                    if (tableAlumno.Rows.Count > 0)
+                    {
+                        result.Objects = new List<object>();
+
+                        foreach (DataRow row in tableAlumno.Rows)
+                        {
+                            ML.Alumno alumno = new ML.Alumno();
+
+                            alumno.IdAlumno = int.Parse(row[0].ToString());
+                            alumno.Nombre = row[1].ToString();
+                            alumno.ApellidoPaterno = row[2].ToString();
+                            alumno.ApellidoMaterno = row[3].ToString();
+                            alumno.Email = row[4].ToString();
+
+                            result.Objects.Add(alumno);
+                        }
+
+                        result.Correct = true;
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.Message = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
     }
 }
