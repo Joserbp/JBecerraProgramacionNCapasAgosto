@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 namespace BL
 {
     public class Alumno
-    { 
+    {
         //METODOS CON QUERY
         public static ML.Result Add(ML.Alumno alumno)
         {
@@ -20,10 +20,10 @@ namespace BL
                 {
                     using (SqlCommand cmd = new SqlCommand())
                     {
-                        cmd.CommandText = "INSERT INTO [Alumno]([Nombre],[ApellidoPaterno],[ApellidoMaterno],[FechaNacimiento],[Sexo])VALUES(@Nombre, @ApellidoPaterno, @ApellidoMaterno, @FechaNacimiento, @Sexo)";
+                        cmd.CommandText = "INSERT INTO [Alumno]([Nombre],[ApellidoPaterno],[ApellidoMaterno], Sexo, IdSemestre )VALUES(@Nombre, @ApellidoPaterno, @ApellidoMaterno,@Sexo, @IdSemestre)";
                         cmd.Connection = context;
 
-                        SqlParameter[] collection = new SqlParameter[5];
+                        SqlParameter[] collection = new SqlParameter[6];
                         collection[0] = new SqlParameter("Nombre", SqlDbType.VarChar);
                         collection[0].Value = alumno.Nombre;
                         collection[1] = new SqlParameter("ApellidoPaterno", SqlDbType.VarChar);
@@ -34,6 +34,8 @@ namespace BL
                         collection[3].Value = alumno.FechaNacimiento;
                         collection[4] = new SqlParameter("Sexo", SqlDbType.Char);
                         collection[4].Value = alumno.Sexo;
+                        collection[5] = new SqlParameter("IdSemestre", SqlDbType.Char);
+                        collection[5].Value = alumno.Semestre.IdSemestre;
 
                         cmd.Parameters.AddRange(collection);
 
@@ -46,7 +48,7 @@ namespace BL
                         }
                         else
                         {
-                            result.Correct=false;
+                            result.Correct = false;
                             result.ErrorMessage = "Ocurrio un error al insertar el Alumno";
                         }
                     }
@@ -145,7 +147,7 @@ namespace BL
                             alumno.Nombre = row[1].ToString();
                             alumno.ApellidoPaterno = row[2].ToString();
                             alumno.ApellidoMaterno = row[3].ToString();
-                            alumno.Email = row[4].ToString();
+                            //alumno.Email = row[4].ToString();
 
                             result.Objects.Add(alumno);
                         }
@@ -159,7 +161,65 @@ namespace BL
             catch (Exception ex)
             {
                 result.Correct = false;
-                result.Message = ex.Message;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public static ML.Result GetById(int IdAlumno)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+
+                using (SqlConnection context = new SqlConnection(DL.Conexion.Get()))
+                {
+                    SqlCommand cmd = new SqlCommand();
+
+                    cmd.CommandText = "AlumnoGetById";
+                    cmd.Connection = context;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    SqlParameter[] collection = new SqlParameter[1];
+                    collection[0] = new SqlParameter("IdAlumno", SqlDbType.Int);
+                    collection[0].Value = IdAlumno;
+
+                    cmd.Parameters.AddRange(collection);
+
+          
+                    DataTable tableAlumno = new DataTable();
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+                    da.Fill(tableAlumno);
+
+                    cmd.Connection.Open();
+
+                    if (tableAlumno.Rows.Count > 0)
+                    {
+                        DataRow row = tableAlumno.Rows[0];
+
+                        ML.Alumno alumno = new ML.Alumno();
+
+                        alumno.IdAlumno = int.Parse(row[0].ToString());
+                        alumno.Nombre = row[1].ToString();
+                        alumno.ApellidoPaterno = row[2].ToString();
+                        alumno.ApellidoMaterno = row[3].ToString();
+                        //alumno.Email = row[4].ToString();
+
+                        result.Object = alumno; //BOXING
+
+                        result.Correct = true;
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
                 result.Ex = ex;
             }
             return result;
