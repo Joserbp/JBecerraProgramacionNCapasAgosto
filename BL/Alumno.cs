@@ -12,6 +12,47 @@ namespace BL
     {
         //METODOS CON EF
 
+        public static ML.Result GetAllEF()
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                using(DL_EF.JBecerraProgramacionNCapasAgostoEntities context = new DL_EF.JBecerraProgramacionNCapasAgostoEntities())
+                {
+                    var alumnos = context.AlumnoGetAll().ToList();
+
+                    if(alumnos != null) 
+                    {
+                        result.Objects = new List<object>();
+                        foreach(var objAlumno in alumnos){
+                            ML.Alumno alumno = new ML.Alumno();
+
+                            alumno.IdAlumno = objAlumno.IdAlumno;
+                            alumno.Nombre = objAlumno.Nombre;
+                            alumno.ApellidoMaterno = objAlumno.ApellidoMaterno;
+                            alumno.ApellidoPaterno = objAlumno.ApellidoPaterno;
+                            alumno.Sexo = objAlumno.Sexo;
+
+                            result.Objects.Add(alumno);
+                        }
+                        result.Correct = true;
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "No se encontraron registros en la Tabla Alumno";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
         public static ML.Result AddEF(ML.Alumno alumno)
         {
             ML.Result result = new ML.Result();

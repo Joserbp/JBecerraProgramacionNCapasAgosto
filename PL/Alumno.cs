@@ -47,7 +47,8 @@ namespace PL
         }
         public static void GetAll()
         {
-            ML.Result result = BL.Alumno.GetAll();
+            //ML.Result result = BL.Alumno.GetAll();
+            ML.Result result = BL.Alumno.GetAllEF();
             if (result.Correct)
             {
                 foreach (ML.Alumno alumno in result.Objects)

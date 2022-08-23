@@ -63,5 +63,10 @@ namespace DL_EF
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("AlumnoAdd", nombreParameter, apellidoPaternoParameter, apellidoMaternoParameter, sexoParameter, fechaNacimientoParameter);
         }
+    
+        public virtual ObjectResult<AlumnoGetAll_Result> AlumnoGetAll()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<AlumnoGetAll_Result>("AlumnoGetAll");
+        }
     }
 }

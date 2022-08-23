@@ -53,6 +53,9 @@
     <Compile Include="Alumno.cs">
       <DependentUpon>JBecerraProgramacionNCapas.tt</DependentUpon>
     </Compile>
+    <Compile Include="AlumnoGetAll_Result.cs">
+      <DependentUpon>JBecerraProgramacionNCapas.tt</DependentUpon>
+    </Compile>
     <Compile Include="AlumnoGetById_Result.cs">
       <DependentUpon>JBecerraProgramacionNCapas.tt</DependentUpon>
     </Compile>
