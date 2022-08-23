@@ -10,6 +10,36 @@ namespace BL
 {
     public class Alumno
     {
+        //METODOS CON EF
+
+        public static ML.Result AddEF(ML.Alumno alumno)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                using(DL_EF.JBecerraProgramacionNCapasAgostoEntities context = new DL_EF.JBecerraProgramacionNCapasAgostoEntities())
+                {
+                    var query = context.AlumnoAdd(alumno.Nombre, alumno.ApellidoPaterno, alumno.ApellidoMaterno, alumno.Sexo, alumno.FechaNacimiento);
+
+                    if(query > 0)
+                    {
+                        result.Correct = true;
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "Ocurrio un error al agregar el alumno";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex; 
+            }
+            return result;
+        }
         //METODOS CON QUERY
         public static ML.Result Add(ML.Alumno alumno)
         {

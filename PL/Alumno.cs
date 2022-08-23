@@ -32,7 +32,8 @@ namespace PL
 
 
             //ML.Result result = BL.Alumno.Add(alumno);
-            ML.Result result = BL.Alumno.AddSP(alumno);
+            //ML.Result result = BL.Alumno.AddSP(alumno);
+            ML.Result result = BL.Alumno.AddEF(alumno);
 
             if (result.Correct)
             {
